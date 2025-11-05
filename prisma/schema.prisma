@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  name      String
+  role      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  address   String?
+  email     String?
+  phone     String?
+  orders    Order[]
+}
+
+model Product {
+  id               Int         @id @default(autoincrement())
+  name             String
+  url              String      @unique
+  shortDescription String
+  content          String      @db.Text
+  price            Int
+  categoryId       Int?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  image            String?
+  orderItems       OrderItem[]
+  category         Category?   @relation(fields: [categoryId], references: [id])
+
+  @@index([categoryId], map: "Product_categoryId_fkey")
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+}
+
+model Blog {
+  id               Int      @id @default(autoincrement())
+  name             String
+  url              String   @unique
+  shortDescription String
+  content          String   @db.Text
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  image            String?
+}
+
+model Order {
+  id            Int         @id @default(autoincrement())
+  customerName  String
+  customerPhone String
+  customerEmail String?
+  address       String
+  total         Int
+  note          String?
+  status        String      @default("pending")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  userId        Int?
+  user          User?       @relation(fields: [userId], references: [id])
+  items         OrderItem[]
+
+  @@index([userId], map: "Order_userId_fkey")
+}
+
+model OrderItem {
+  id           Int      @id @default(autoincrement())
+  orderId      Int
+  productId    Int?
+  productName  String
+  productImage String?
+  quantity     Int
+  price        Int
+  order        Order    @relation(fields: [orderId], references: [id])
+  product      Product? @relation(fields: [productId], references: [id])
+
+  @@index([orderId], map: "OrderItem_orderId_fkey")
+  @@index([productId], map: "OrderItem_productId_fkey")
+}
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  name      String
+  url       String   @unique
+  category  String
+  createdAt DateTime @default(now())
+}
