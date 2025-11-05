@@ -17,7 +17,7 @@ This repository contains the **backend** source code of the project.
 - Redux Toolkit
 - Vite
 
-  [View FrontEnd Repository](https://github.com/vuutruongnhatthanhhh/tjzenn-ecommerce-nodejs)
+  [View FrontEnd Repository](https://github.com/vuutruongnhatthanhhh/ecommerce-reactjs)
 
 **Backend**
 
